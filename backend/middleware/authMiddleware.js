@@ -2,10 +2,10 @@ import jwt from 'jsonwebtoken';
 import Veterinario from '../models/Veterinario.js'
 
 const checkAuth = async (req, res, next) => {
-    let tokenJWT;
+
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            tokenJWT = req.headers.authorization.split(' ')[1];
+            const tokenJWT = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(tokenJWT, process.env.JWT_SECRET);
 
             req.veterinario = await Veterinario.findById(decoded.id).select("-password -token -confirmado")
@@ -15,10 +15,9 @@ const checkAuth = async (req, res, next) => {
             return res.status(403).json({ msg: err.message })
         }
     }
-    if (!tokenJWT) {
-        const err = new Error('El token no valido o no existe');
-        res.status(403).json({ msg: err.message })
-    }
+
+    const err = new Error('El token no valido o no existe');
+    res.status(403).json({ msg: err.message })
     next()
 }
 

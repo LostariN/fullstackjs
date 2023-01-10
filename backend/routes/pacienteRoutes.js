@@ -1,10 +1,17 @@
 import express from 'express';
-import { agregarPaciente, obtenerPaciente } from '../controllers/pacienteControllers.js'
+import { agregarPaciente, obtenerPacientes, obtenerPaciente, actualizarPaciente, eliminarPaciente } from '../controllers/pacienteControllers.js'
+import checkAuth from '../middleware/authMiddleware.js'
 const router = express.Router();
 
 router.route('/')
-    .post(agregarPaciente)
-    .get(obtenerPaciente)
+    .post(checkAuth, agregarPaciente)
+    .get(checkAuth, obtenerPacientes)
+
+router.route('/:id')
+    .get(checkAuth, obtenerPaciente)
+    .put(checkAuth, actualizarPaciente)
+    .delete(checkAuth, eliminarPaciente)
+
 
 
 export default router;
