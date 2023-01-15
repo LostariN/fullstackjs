@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Alerta from '../components/Alerta';
-import axios from 'axios'
+import clienteAxios from '../config/axios';
+
 
 const Registrar = () => {
 
@@ -31,8 +32,7 @@ const Registrar = () => {
         setAlerta({})
 
         try {
-            const url = "http://localhost:4000/api/veterinarios";
-            const rest = await axios.post(url, { nombre, email, password })
+            await clienteAxios.post("/veterinarios", { nombre, email, password })
             setAlerta({
                 msg: "Creado Correctamente, revisa tu email",
                 error: false
@@ -88,10 +88,12 @@ const Registrar = () => {
                     </div>
 
                     {alerta.msg && <Alerta alerta={alerta} />}
-                    <input type="submit"
-                        className="bg-indigo-700 hover:bg-indigo-600 w-full py-3 rounded-xl text-white font-bold uppercase mt-10 hover:cursor-pointer md:w-auto px-10 "
-                        value="Registrar"
-                    />
+                    <div className='flex justify-center'>
+                        <input type="submit"
+                            className="bg-indigo-700 hover:bg-indigo-600 w-full py-3 rounded-xl text-white font-bold uppercase mt-10 hover:cursor-pointer md:w-auto px-20 "
+                            value="Registrar"
+                        />
+                    </div>
                 </form>
                 <nav className='mt-10 lg:flex lg:justify-between'>
                     <Link
