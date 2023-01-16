@@ -2,6 +2,7 @@ import Veterinario from '../models/Veterinario.js'
 import generarJWT from '../helpers/generarJWT.js'
 import generarId from '../helpers/generarIDToken.js';
 import emailRegistro from '../helpers/emailRegistro.js';
+import emailOlvidePassword from '../helpers/emailOlvidePassword.js';
 
 
 const registrar = async (req, res) => {
@@ -92,6 +93,12 @@ const restaurarPass = async (req, res) => {
     try {
         existeVeterinario.token = generarId();
         await existeVeterinario.save();
+        const { nombre, email, token } = existeVeterinario
+        emailOlvidePassword({
+            nombre,
+            email,
+            token
+        })
         res.json({ msg: 'Email enviado' })
     } catch (error) {
 
