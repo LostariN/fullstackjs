@@ -5,7 +5,7 @@ const agregarPaciente = async (req, res) => {
     paciente.veterinario = req.veterinario.id
     try {
         const pacienteAlmacenado = await paciente.save();
-        res.json({ pacienteAlmacenado })
+        res.json(pacienteAlmacenado)
     } catch (error) {
         console.log(error);
     }
@@ -14,7 +14,7 @@ const obtenerPacientes = async (req, res) => {
 
     const pacientes = await Paciente.find().where("veterinario").equals(req.veterinario.id)
     // console.log(req.veterinario);
-    res.json({ pacientes })
+    res.json(pacientes)
 }
 const obtenerPaciente = async (req, res) => {
     const paciente = await Paciente.findById(req.params.id)
@@ -49,7 +49,7 @@ const actualizarPaciente = async (req, res) => {
 
     try {
         const pacienteActualizado = await paciente.save()
-        res.json({ pacienteActualizado })
+        res.json(pacienteActualizado)
     } catch (error) {
         console.log(error);
     }

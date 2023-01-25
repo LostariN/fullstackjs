@@ -33,7 +33,7 @@ const registrar = async (req, res) => {
 const perfil = (req, res) => {
     const { veterinario } = req;
 
-    res.json({ perfil: veterinario })
+    res.json(veterinario)
 }
 const confirmar = async (req, res) => {
     const { token } = req.params;
@@ -73,7 +73,12 @@ const autenticar = async (req, res) => {
     try {
         if (await usuarioEncontrado.comprobarPass(password)) {
 
-            res.json({ token: generarJWT(usuarioEncontrado.id) })
+            res.json({
+                _id: usuarioEncontrado._id,
+                nombre: usuarioEncontrado.nombre,
+                email: usuarioEncontrado.email,
+                token: generarJWT(usuarioEncontrado.id)
+            })
         } else {
             const err = new Error('PASSWORD INCORRECTO');
             return res.status(403).json({ msg: err.message })
@@ -134,6 +139,55 @@ const nuevoPass = async (req, res) => {
         console.log(error);
     }
 }
+
+const actualizarPerfil = async (req, res) => {
+
+    const veterinario = await Veterinario.findById(req.params.id)
+
+    if (!veterinario) {
+        return res.status(404).json({ msg: 'este veterinario no existe' })
+    }
+    if (veterinario._id.toString() !== req.veterinario._id.toString()) {
+        return res.json({ msg: 'Accion no valida' })
+    }
+    const { email } = req.body
+    if (veterinario.email !== req.body.email) {
+        const existeEmail = await Veterinario.findOne({ email })
+        if (existeEmail) {
+            const error = new Error('Este email ya existe')
+            return res.status(400).json({ msg: error.message })
+        }
+    }
+    try {
+        veterinario.nombre = req.body.nombre || veterinario.nombre;
+        veterinario.web = req.body.web || veterinario.web;
+        veterinario.telefono = req.body.telefono || veterinario.telefono;
+        veterinario.email = req.body.email || veterinario.email;
+
+        const veterActualizado = await veterinario.save()
+        res.json({ veterActualizado, msg: "Almacenado Correctamente" })
+    } catch (error) {
+        console.log(error);
+    }
+}
+const actualizarPass = async (req, res) => {
+    const { oldPass, newPass } = req.body
+    const { id } = req.veterinario
+    const veterinario = await Veterinario.findById(id)
+    if (!veterinario) {
+        const err = new Error('usuario no encontrado');
+        return res.status(403).json({ msg: err.message })
+    }
+    if (await veterinario.comprobarPass(oldPass)) {
+        veterinario.password = newPass
+        await veterinario.save();
+        res.json({ msg: "Password Actualizado correctamente" })
+    } else {
+        const err = new Error('Password inocrrecta');
+        return res.status(400).json({ msg: err.message })
+    }
+
+}
 export {
     registrar,
     perfil,
@@ -141,6 +195,8 @@ export {
     autenticar,
     restaurarPass,
     nuevoPass,
-    comprobarToken
+    comprobarToken,
+    actualizarPerfil,
+    actualizarPass
 
 }
