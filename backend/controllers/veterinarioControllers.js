@@ -3,11 +3,11 @@ import generarJWT from '../helpers/generarJWT.js'
 import generarId from '../helpers/generarIDToken.js';
 import emailRegistro from '../helpers/emailRegistro.js';
 import emailOlvidePassword from '../helpers/emailOlvidePassword.js';
-
+// import { emailRegistro, emailOlvidePassword } from '../helpers/email.js'
 
 const registrar = async (req, res) => {
 
-    const { email, nombre } = req.body;
+    const { nombre, email } = req.body;
     const usuarioExiste = await Veterinario.findOne({ email: email })
 
     if (usuarioExiste) {

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 
-const emailOlvidePassword = (datos) => {
+const emailOlvidePassword = async (datos) => {
     const transport = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
@@ -12,9 +12,9 @@ const emailOlvidePassword = (datos) => {
     });
     const { email, nombre, token } = datos;
 
-    const info = transport.sendMail({
-        from: "APV-Administrador de Veterinario",
-        to: email,
+    const info = await transport.sendMail({
+        from: '"APV - Administrador Pacientes Veterinaria" <apv@correo.com>',
+        to: `${email}`,
         subject: "Reestablece tu password",
         text: "Reestablece tu password",
         html: `

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 
-const emailRegistro = (datos) => {
+const emailRegistro = async (datos) => {
     const transport = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
@@ -12,8 +12,8 @@ const emailRegistro = (datos) => {
     });
     const { email, nombre, token } = datos;
 
-    const info = transport.sendMail({
-        from: "APV-Administrador de Veterinario",
+    const info = await transport.sendMail({
+        from: '"APV - Administrador Pacientes Veterinaria" <apv@correo.com>',
         to: email,
         subject: "Comprueba tu Cuenta",
         text: "Comprueba tu cuenta",
@@ -24,7 +24,8 @@ const emailRegistro = (datos) => {
 
         `
     })
-    console.log("Mensaje enviado: %s");
+    console.log("Mensaje enviado: %s", info.messageId);
+
 }
 
 
